@@ -462,8 +462,8 @@ def evidence_from_sam_alignment(sequence_evidence,reference_sequences,sam_file_h
 	
 	# skip header lines
 	sam_file = open(sam_file_handle)
-	read = sam_file.readline()
-	while read[0]=='@':  read = sam_file.readline()
+	read = sam_file.readline(5_000_000)
+	while read[0]=='@':  read = sam_file.readline(5_000_000)
 	
 	# go through one read (or pair) at a time, relate to reference sequence and populate nucleotide/sequence entries
 	counter = 0
@@ -569,7 +569,7 @@ def evidence_from_sam_alignment(sequence_evidence,reference_sequences,sam_file_h
 					print('\t',' '*(10-len(str(counter)))+str(counter),'reads incorporated into evidence model.',file=sys.stderr)
 					
 		# load next set
-		read = sam_file.readline()
+		read = sam_file.readline(5_000_000)
 		
 #@	# sort reads by beginning of alignment
 #@	for chromosome in read_mapping:
