@@ -86,6 +86,8 @@ gencode = {'ATA':'I', 'ATC':'I', 'ATT':'I', 'ATG':'M', 'ACA':'T',
 # general functions #
 #####################
 def handle_cigar(cigar, aligned_read_position):
+	""""""
+	
 	allowable_cigar_letters = ['MIDNSHP=X']
 	# M = match or mismatch. simple; keep.
 	# I = insertion. add to indexing; keep
@@ -120,6 +122,8 @@ def handle_cigar(cigar, aligned_read_position):
 	return aligned_read_position, insertions, deletions
 
 def get_sequence_from_fasta(fasta, name):										
+	""""""
+	
 	#return ''.join('>'.join(open(fasta).read().split('>')[1:]).split(name)[1].split('\n>')[0].split('\n')[1:])
 	real_entry = '\n' # gives blank result if real sequence not found
 	for entry in open(fasta).read()[1:].split('\n>'):
@@ -129,6 +133,17 @@ def get_sequence_from_fasta(fasta, name):
 	return ''.join(real_entry.split('\n')[1:])
 
 def reverse_compliment(sequence):
+	"""Function to generate the reverse compliment sequence of a given DNA sequence.
+	Parameters:
+	- sequence (str): DNA sequence to be reversed and complimented.
+	Returns:
+	- reverse_compliment_sequence (str): Reverse compliment sequence of the given DNA sequence.
+	Processing Logic:
+	- Reverses the given sequence.
+	- Replaces each nucleotide with its compliment.
+	- Handles gaps in the sequence.
+	- Returns the reverse compliment sequence."""
+	
 	reverse_compliment_sequence = ''
 	# go backwards from the end of the sequence to the beginning
 	for i in range(len(sequence)-1,-1,-1):
@@ -140,6 +155,8 @@ def reverse_compliment(sequence):
 	return reverse_compliment_sequence
 
 def Guassian(z):
+	""""""
+	
 	# approximates probability given z-score according to Gaussian
 	z=float(z)
 	summ = z
@@ -152,6 +169,8 @@ def Guassian(z):
 	return G
 
 def rational_approximation(t):
+    """"""
+    
     # Abramowitz and Stegun formula 26.2.23.
     # The absolute value of the error should be less than 4.5 e-4.
     c = [2.515517, 0.802853, 0.010328]
@@ -161,11 +180,15 @@ def rational_approximation(t):
     return t - numerator / denominator
 
 def Guassian_inverse(p):
+    """"""
+    
     assert p > 0.0 and p < 1
     if p < 0.5:  return -1*rational_approximation( sqrt(-2.0*log(p)) )
     else:        return rational_approximation( sqrt(-2.0*log(1.0-p)) )
 
 def is_negative_strand(flag):
+	""""""
+	
 	# converts decimal format of flag to binary,
 	# checks whether read mapped to reverse compliment.
 	# i.e. determines positive vs negative strand.
@@ -174,18 +197,26 @@ def is_negative_strand(flag):
 	return  bit16
 
 def mean(numbers):
+	""""""
+	
 	return sum(numbers)/float(len(numbers))
 
 def stdev(numbers, mean):
+	""""""
+	
 	variance = 0.0
 	for i in numbers:
 			variance += (mean-i)**2
 	return sqrt(variance/len(numbers))
 
 def z_score(x, mean, stdev):
+	""""""
+	
 	return (x - mean) / float(stdev)
 
 def median(numbers):
+	""""""
+	
 	numbers.sort()
 	return numbers[int(round(len(numbers)/2.0))]
 
@@ -198,6 +229,8 @@ def median(numbers):
 ######################
 
 def get_CNV_ratios(mutant_tile_reads, wt_tile_reads):
+	""""""
+	
 	tile_read_ratios = {}
 	for chromosome in chromosomes:
 		tile_read_ratios[chromosome] = {}
@@ -218,6 +251,8 @@ def get_CNV_ratios(mutant_tile_reads, wt_tile_reads):
 
 
 def get_gene_names(tile_start, tile_end):
+		""""""
+		
 		# report no genes if tile occurs before first gene
 		if tile_end < gff_model[chromosome][0][0]:
 			gene_names = ''
@@ -258,6 +293,8 @@ def get_gene_names(tile_start, tile_end):
 		
 
 def get_tile_counts(sequence_evidence):
+	""""""
+	
 	tile_reads = {}
 	for chromosome in sequence_evidence:
 		tile_reads[chromosome] = {}
@@ -271,6 +308,8 @@ def get_tile_counts(sequence_evidence):
 
 
 def get_counts(reads):
+	""""""
+	
 	# fastest of all algorithms I tested to map reads to tiles/windows of any length 
 	tile_reads = {}
 	for chromosome in reads:
@@ -307,6 +346,8 @@ def get_counts(reads):
 
 
 def get_counts_next(reads):
+	""""""
+	
 	# kept for posterity. This is slower, but it is suggested to be faster throughout the interwebz.
 	tile_reads = {}
 	for chromosome in reads:
@@ -327,6 +368,8 @@ def get_counts_next(reads):
 	
 
 def does_mutation_change_amino_acid(genomic_position, variant_nucleotide, gene_model):
+	""""""
+	
 	gene_start, gene_end, strand, gene_id, gene_type, protein_length, AA_indices, CDS_exons, stop, description = gene_model
 	
 	# account for multi-exon genes.
@@ -455,6 +498,8 @@ def does_mutation_change_amino_acid(genomic_position, variant_nucleotide, gene_m
 
 #@def evidence_from_sam_alignment(sequence_evidence,reference_sequences,sam_file_handle,read_mapping):
 def evidence_from_sam_alignment(sequence_evidence,reference_sequences,sam_file_handle):
+	""""""
+	
 	print("Mapping SAM alignments from", sam_file_handle, "to reference sequence...",file=sys.stderr)
 	
 	# relate SAM alignment file to reference sequence
@@ -581,6 +626,8 @@ def evidence_from_sam_alignment(sequence_evidence,reference_sequences,sam_file_h
 
 
 def prep_gene_model(CDS_exons, gene_id):
+	""""""
+	
 	# prepare gene for entry into gene model
 	# must consider multiple exons per gene. Can check against NT & AA sequences at end of file if available.
 	
@@ -674,6 +721,8 @@ def prep_gene_model(CDS_exons, gene_id):
 
 
 def read_gff(gff_file_handle,reference_sequences):
+	""""""
+	
 	print("Reading GFF file gene model...",file=sys.stderr)
 	
 	gene_descriptions = {}
